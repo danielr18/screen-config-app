@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, AsyncStorage } from 'react-native'
 import { Text, View } from 'react-native-animatable'
 
+import API from '../../api'
 import CustomButton from '../../components/CustomButton'
 import CustomTextInput from '../../components/CustomTextInput'
 import metrics from '../../config/metrics'
@@ -9,14 +10,15 @@ import metrics from '../../config/metrics'
 export default class LoginForm extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    onLoginPress: PropTypes.func.isRequired,
-    onSignupLinkPress: PropTypes.func.isRequired
+    onSuccessLogin: PropTypes.func.isRequired,
+    onSignupLinkPress: PropTypes.func.isRequired,
+    startLoading: PropTypes.func.isRequired,
+    stopLoading: PropTypes.func.isRequired
   }
 
   state = {
     email: '',
-    password: '',
-    fullName: ''
+    password: ''
   }
 
   hideForm = async () => {
@@ -29,9 +31,25 @@ export default class LoginForm extends Component {
     }
   }
 
+  handleLogin = () => {
+    const { email, password } = this.state
+    this.props.startLoading()
+    API.login(email, password)
+      .then(res => {
+        return AsyncStorage.setItem('jwt', res.data.token)
+      })
+      .then(() => {
+        this.props.onSuccessLogin()
+        this.props.stopLoading()
+      })
+      .catch(e => {
+        this.props.stopLoading()
+      })
+  }
+
   render () {
     const { email, password } = this.state
-    const { isLoading, onSignupLinkPress, onLoginPress } = this.props
+    const { isLoading, onSignupLinkPress } = this.props
     const isValid = email !== '' && password !== ''
     return (
       <View style={styles.container}>
@@ -47,29 +65,31 @@ export default class LoginForm extends Component {
             withRef={true}
             onSubmitEditing={() => this.passwordInputRef.focus()}
             onChangeText={(value) => this.setState({ email: value })}
+            value={email}
             isEnabled={!isLoading}
           />
           <CustomTextInput
             name={'password'}
             ref={(ref) => this.passwordInputRef = ref}
-            placeholder={'Password'}
+            placeholder={'Contraseña'}
             editable={!isLoading}
             returnKeyType={'done'}
             secureTextEntry={true}
             withRef={true}
             onChangeText={(value) => this.setState({ password: value })}
+            value={password}
             isEnabled={!isLoading}
           />
         </View>
         <View style={styles.footer}>
           <View ref={(ref) => this.buttonRef = ref} animation={'bounceIn'} duration={600} delay={400}>
             <CustomButton
-              onPress={() => onLoginPress(email, password)}
+              onPress={this.handleLogin}
               isEnabled={isValid}
               isLoading={isLoading}
               buttonStyle={styles.loginButton}
               textStyle={styles.loginButtonText}
-              text={'Log In'}
+              text={'Iniciar Sesión'}
             />
           </View>
           <Text
@@ -80,7 +100,7 @@ export default class LoginForm extends Component {
             duration={600}
             delay={400}
           >
-            {'Not registered yet?'}
+            {'¿No te has registrado aun?'}
           </Text>
         </View>
       </View>

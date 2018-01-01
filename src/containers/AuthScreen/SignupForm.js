@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { StyleSheet } from 'react-native'
 import { Text, View } from 'react-native-animatable'
 
+import API from '../../api'
 import CustomButton from '../../components/CustomButton'
 import CustomTextInput from '../../components/CustomTextInput'
 import metrics from '../../config/metrics'
@@ -9,14 +10,16 @@ import metrics from '../../config/metrics'
 export default class SignupForm extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    onSignupPress: PropTypes.func.isRequired,
+    startLoading: PropTypes.func.isRequired,
+    stopLoading: PropTypes.func.isRequired,
+    onSuccessSignup: PropTypes.func.isRequired,
     onLoginLinkPress: PropTypes.func.isRequired
   }
 
   state = {
     email: '',
     password: '',
-    fullName: ''
+    name: ''
   }
 
   hideForm = async () => {
@@ -29,22 +32,37 @@ export default class SignupForm extends Component {
     }
   }
 
+  onSignup = () => {
+    const { email, password, name } = this.state
+    const userData = { email, password, nombre: name }
+    this.props.startLoading()
+    API.createUser(userData)
+      .then(res => {
+        this.props.stopLoading()
+        this.props.onSuccessSignup(userData)
+      })
+      .catch((e) => {
+        this.props.stopLoading()
+      })
+  }
+
   render () {
-    const { email, password, fullName } = this.state
-    const { isLoading, onLoginLinkPress, onSignupPress } = this.props
-    const isValid = email !== '' && password !== '' && fullName !== ''
+    const { email, password, name } = this.state
+    const { isLoading, onLoginLinkPress } = this.props
+    const isValid = email !== '' && password !== '' && name !== ''
     return (
       <View style={styles.container}>
         <View style={styles.form} ref={(ref) => this.formRef = ref}>
           <CustomTextInput
             ref={(ref) => this.mobileInputRef = ref}
-            placeholder={'Full name'}
+            placeholder={'Nombre / Organización'}
             editable={!isLoading}
             returnKeyType={'next'}
             blurOnSubmit={false}
             withRef={true}
             onSubmitEditing={() => this.emailInputRef.focus()}
-            onChangeText={(value) => this.setState({ fullName: value })}
+            onChangeText={(value) => this.setState({ name: value })}
+            value={name}
             isEnabled={!isLoading}
           />
           <CustomTextInput
@@ -57,28 +75,30 @@ export default class SignupForm extends Component {
             withRef={true}
             onSubmitEditing={() => this.passwordInputRef.focus()}
             onChangeText={(value) => this.setState({ email: value })}
+            value={email}
             isEnabled={!isLoading}
           />
           <CustomTextInput
             ref={(ref) => this.passwordInputRef = ref}
-            placeholder={'Password'}
+            placeholder={'Contraseña'}
             editable={!isLoading}
             returnKeyType={'done'}
             secureTextEntry={true}
             withRef={true}
             onChangeText={(value) => this.setState({ password: value })}
+            value={password}
             isEnabled={!isLoading}
           />
         </View>
         <View style={styles.footer}>
           <View ref={(ref) => this.buttonRef = ref} animation={'bounceIn'} duration={600} delay={400}>
             <CustomButton
-              onPress={() => onSignupPress(email, password, fullName)}
+              onPress={this.onSignup}
               isEnabled={isValid}
               isLoading={isLoading}
               buttonStyle={styles.createAccountButton}
               textStyle={styles.createAccountButtonText}
-              text={'Create Account'}
+              text={'Crear Cuenta'}
             />
           </View>
           <Text
@@ -89,7 +109,7 @@ export default class SignupForm extends Component {
             duration={600}
             delay={400}
           >
-            {'Already have an account?'}
+            {'¿Ya tienes una cuenta?'}
           </Text>
         </View>
       </View>

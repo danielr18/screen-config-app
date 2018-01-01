@@ -16,7 +16,7 @@ export default class Opening extends Component {
       <View style={styles.container}>
         <View animation={'zoomIn'} delay={600} duration={400}>
           <CustomButton
-            text={'Create Account'}
+            text={'Crear Cuenta'}
             onPress={this.props.onCreateAccountPress}
             buttonStyle={styles.createAccountButton}
             textStyle={styles.createAccountButtonText}
@@ -24,12 +24,12 @@ export default class Opening extends Component {
         </View>
         <View style={styles.separatorContainer} animation={'zoomIn'} delay={700} duration={400}>
           <View style={styles.separatorLine} />
-          <Text style={styles.separatorOr}>{'Or'}</Text>
+          <Text style={styles.separatorOr}>{'O'}</Text>
           <View style={styles.separatorLine} />
         </View>
         <View animation={'zoomIn'} delay={800} duration={400}>
           <CustomButton
-            text={'Sign In'}
+            text={'Iniciar Sesión'}
             onPress={this.props.onSignInPress}
             buttonStyle={styles.signInButton}
             textStyle={styles.signInButtonText}

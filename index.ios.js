@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native'
-import LoginAnimation from './src/app'
+import PiScreenConfig from './src/app'
 
-AppRegistry.registerComponent('LoginAnimation', () => LoginAnimation)
+AppRegistry.registerComponent('PiScreenConfig', () => PiScreenConfig)

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { KeyboardAvoidingView, LayoutAnimation, Platform, StyleSheet, UIManager } from 'react-native'
 import { Image, View } from 'react-native-animatable'
-
 import imgLogo from '../../images/logo.png'
 import metrics from '../../config/metrics'
 
@@ -45,8 +44,10 @@ export default class AuthScreen extends Component {
   static propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    signup: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired,
+    startLoading: PropTypes.func.isRequired,
+    stopLoading: PropTypes.func.isRequired,
+    onSuccessSignup: PropTypes.func.isRequired,
+    onSuccessLogin: PropTypes.func.isRequired,
     onLoginAnimationCompleted: PropTypes.func.isRequired // Called at the end of a succesfull login/signup animation
   }
 
@@ -82,7 +83,7 @@ export default class AuthScreen extends Component {
   }
 
   render () {
-    const { isLoggedIn, isLoading, signup, login } = this.props
+    const { isLoggedIn, isLoading, onSuccessSignup, onSuccessLogin } = this.props
     const { visibleForm } = this.state
     // The following style is responsible of the "bounce-up from bottom" animation of the form
     const formStyle = (!visibleForm) ? { height: 0 } : { marginTop: 40 }
@@ -111,7 +112,9 @@ export default class AuthScreen extends Component {
             <SignupForm
               ref={(ref) => this.formRef = ref}
               onLoginLinkPress={() => this._setVisibleForm('LOGIN')}
-              onSignupPress={signup}
+              onSuccessSignup={onSuccessSignup}
+              startLoading={this.props.startLoading}
+              stopLoading={this.props.stopLoading}
               isLoading={isLoading}
             />
           )}
@@ -119,7 +122,9 @@ export default class AuthScreen extends Component {
             <LoginForm
               ref={(ref) => this.formRef = ref}
               onSignupLinkPress={() => this._setVisibleForm('SIGNUP')}
-              onLoginPress={login}
+              onSuccessLogin={onSuccessLogin}
+              startLoading={this.props.startLoading}
+              stopLoading={this.props.stopLoading}
               isLoading={isLoading}
             />
           )}

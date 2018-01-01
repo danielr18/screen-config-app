@@ -1,32 +1,63 @@
 import React, { Component } from 'react'
-
+import { AsyncStorage } from 'react-native'
 import AuthScreen from './containers/AuthScreen'
 import HomeScreen from './containers/HomeScreen'
+import SetupScreen from './containers/SetupScreen'
+import API from './api'
 
 /**
  * The root component of the application.
  * In this component I am handling the entire application state, but in a real app you should
  * probably use a state management library like Redux or MobX to handle the state (if your app gets bigger).
  */
-export class LoginAnimation extends Component {
-  state = {
-    isLoggedIn: false, // Is the user authenticated?
-    isLoading: false, // Is the user loggingIn/signinUp?
-    isAppReady: false // Has the app completed the login animation?
+export class PiScreenConfig extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isSettingUp: false,
+      isLoggedIn: false, // Is the user authenticated?
+      isLoading: false, // Is the user loggingIn/signinUp?
+      isAppReady: true // Has the app completed the login animation?
+    }
   }
 
-  /**
-   * Two login function that waits 1000 ms and then authenticates the user succesfully.
-   * In your real app they should be replaced with an API call to you backend.
-   */
-  _simulateLogin = (username, password) => {
-    this.setState({ isLoading: true })
-    setTimeout(() => this.setState({ isLoggedIn: true, isLoading: false }), 1000)
+  componentWillMount () {
+    // AsyncStorage.removeItem('jwt')
+    AsyncStorage.getItem('jwt')
+      .then((token) => {
+        if (token) {
+          this.setState({ isLoggedIn: true })
+        }
+      })
   }
 
-  _simulateSignup = (username, password, fullName) => {
+  startLoading = () => {
     this.setState({ isLoading: true })
-    setTimeout(() => this.setState({ isLoggedIn: true, isLoading: false }), 1000)
+  }
+
+  stopLoading = () => {
+    this.setState({ isLoading: false })
+  }
+
+  handleSuccessLogin = () => {
+    this.setState({
+      isLoggedIn: true
+    })
+  }
+
+  handleSuccessSignup = ({ email, password }) => {
+    this.startLoading()
+    API.login(email, password)
+      .then(res => {
+        AsyncStorage.setItem('jwt', res.data.token)
+        this.setState({
+          isLoading: false,
+          isLoggedIn: true
+        })
+      })
+      .catch(e => {
+        this.stopLoading()
+      })
   }
 
   /**
@@ -34,17 +65,26 @@ export class LoginAnimation extends Component {
    * If the user is authenticated (isAppReady) show the HomeScreen, otherwise show the AuthScreen
    */
   render () {
-    if (this.state.isAppReady) {
-      return (
-        <HomeScreen
-          logout={() => this.setState({ isLoggedIn: false, isAppReady: false })}
-        />
-      )
+    if (this.state.isLoggedIn) {
+      if (!this.state.isSettingUp) {
+        return (
+          <HomeScreen
+            setupScreen={() => this.setState({ isSettingUp: true })}
+            logout={() => this.setState({ isLoggedIn: false, isAppReady: false, isSettingUp: false })}
+          />
+        )
+      } else {
+        return (
+          <SetupScreen />
+        )
+      }
     } else {
       return (
         <AuthScreen
-          login={this._simulateLogin}
-          signup={this._simulateSignup}
+          startLoading={this.startLoading}
+          stopLoading={this.stopLoading}
+          onSuccessLogin={this.handleSuccessLogin}
+          onSuccessSignup={this.handleSuccessSignup}
           isLoggedIn={this.state.isLoggedIn}
           isLoading={this.state.isLoading}
           onLoginAnimationCompleted={() => this.setState({ isAppReady: true })}
@@ -54,4 +94,4 @@ export class LoginAnimation extends Component {
   }
 }
 
-export default LoginAnimation
+export default PiScreenConfig
