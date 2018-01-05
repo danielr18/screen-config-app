@@ -1,42 +1,42 @@
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { Component } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-import Header from '../../components/Header';
-import CreateScreen from './CreateScreen';
-import SelectScreen from './SelectScreen';
-import WifiScreen from './WifiScreen';
+import Header from '../../components/Header'
+import CreateScreen from './CreateScreen'
+import SelectScreen from './SelectScreen'
+import WifiScreen from './WifiScreen'
 
 export class SetupScreen extends Component {
   state = {
     settingName: true,
     pickingDevice: false,
     settingWifi: false,
-    token: null,
-  };
+    token: null
+  }
 
   setToken = token => {
-    this.setState({ token });
-  };
+    this.setState({ token })
+  }
 
   goBack = () => {
     if (this.state.settingName) {
-      this.props.homeScreen();
+      this.props.homeScreen()
     } else if (this.state.pickingDevice) {
       this.setState({
         settingWifi: false,
         pickingDevice: false,
-        settingName: true,
-      });
+        settingName: true
+      })
     } else if (this.state.settingWifi) {
       this.setState({
         settingWifi: false,
         pickingDevice: true,
-        settingName: false,
-      });
+        settingName: false
+      })
     }
-  };
+  }
 
-  renderScreen() {
+  renderScreen () {
     if (this.state.settingName) {
       return (
         <CreateScreen
@@ -45,31 +45,32 @@ export class SetupScreen extends Component {
             this.setState({
               settingName: false,
               settingWifi: false,
-              pickingDevice: true,
+              pickingDevice: true
             })
           }
         />
-      );
+      )
     } else if (this.state.pickingDevice) {
       return (
         <SelectScreen
+          token={this.state.token}
           setupWiFi={() =>
             this.setState({
               settingName: false,
               settingWifi: true,
-              pickingDevice: false,
+              pickingDevice: false
             })
           }
         />
-      );
+      )
     } else if (this.state.settingWifi) {
-      return <WifiScreen />;
+      return <WifiScreen />
     } else {
-      return null;
+      return null
     }
   }
 
-  render() {
+  render () {
     return (
       <View style={styles.outerContainer}>
         <Header
@@ -81,14 +82,14 @@ export class SetupScreen extends Component {
         />
         {this.renderScreen()}
       </View>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   outerContainer: {
-    flex: 1,
-  },
-});
+    flex: 1
+  }
+})
 
-export default SetupScreen;
+export default SetupScreen

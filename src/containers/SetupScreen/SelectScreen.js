@@ -15,7 +15,7 @@ const slideAnimation = new SlideAnimation({
   slideFrom: 'bottom'
 })
 
-export default class HomeScreen extends Component {
+export default class SelectScreen extends Component {
   state = {
     connecting: false,
     connected: false,
@@ -89,7 +89,7 @@ export default class HomeScreen extends Component {
               connecting: false,
               connected: true
             })
-            setTimeout(this.showScreenCode, 3000)
+            setTimeout(this.showScreenCode, 10000)
           }
         })
       }, 2000)
@@ -98,6 +98,7 @@ export default class HomeScreen extends Component {
   }
 
   setupScreen = () => {
+    console.log({ token: this.props.token })
     axios.post('http://192.168.0.1:8080/api/init/auth', { token: this.props.token })
       .then((res) => {
         this.props.setupWiFi()
@@ -153,7 +154,7 @@ export default class HomeScreen extends Component {
           <Text style={styles.hintText}>{hintText}</Text>
         </View>
         <PopupDialog
-          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          ref={(popupDialog) => { this.popupDialog = popupDialog }}
           dialogAnimation={slideAnimation}
           onDismissed={this.handleDialogDismiss}
           dialogStyle={styles.dialogContainer}
@@ -183,10 +184,10 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
   centerContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   outerContainer: {
-    flex: 1,
+    flex: 1
   },
   innerContainer: {
     flex: 1,

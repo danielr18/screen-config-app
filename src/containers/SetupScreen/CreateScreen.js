@@ -1,6 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import axios from 'axios'
-import { StyleSheet, View, Text, TextInput, Dimensions, Button } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  Button
+} from 'react-native'
 import { Hideo } from 'react-native-textinput-effects'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 
@@ -19,7 +26,7 @@ export default class HomeScreen extends Component {
     setWifi: PropTypes.func
   }
 
-  handleNameChange = (screenName) => {
+  handleNameChange = screenName => {
     this.setState({
       screenName
     })
@@ -28,8 +35,8 @@ export default class HomeScreen extends Component {
   getScreenToken = () => {
     this.setState({ loading: true })
     API.createDevice(this.state.screenName)
-      .then(device => {
-        this.props.setToken(device.token)
+      .then(res => {
+        this.props.setToken(res.data.token)
         this.props.pickDevice()
       })
       .catch(console.log)
@@ -40,7 +47,10 @@ export default class HomeScreen extends Component {
       <View style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>Asignale un nombre a esta pantalla</Text>
-          <Text style={styles.subtitle}>Este es el nombre por el cual identificaras la pantalla en el panel de administración de publicidad</Text>
+          <Text style={styles.subtitle}>
+            Este es el nombre por el cual identificaras la pantalla en el panel
+            de administración de publicidad
+          </Text>
           {!this.state.loading ? (
             <View style={{ flex: 1 }}>
               <Hideo
@@ -54,7 +64,11 @@ export default class HomeScreen extends Component {
                 value={this.state.screenName}
                 onChangeText={this.handleNameChange}
               />
-              <Button title="Continuar" style={styles.continueButton} onPress={this.getScreenToken} />
+              <Button
+                title="Continuar"
+                style={styles.continueButton}
+                onPress={this.getScreenToken}
+              />
             </View>
           ) : (
             <View style={styles.loadingContainer}>
@@ -89,8 +103,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     textAlign: 'center'
   },
-  continueButton: {
-  },
+  continueButton: {},
   loadingContainer: {
     flex: 1,
     alignItems: 'center',

@@ -1,6 +1,14 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import axios from 'axios'
-import { StyleSheet, View, Text, TextInput, Dimensions, Button, Picker } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  Button,
+  Picker
+} from 'react-native'
 import { Hideo } from 'react-native-textinput-effects'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import wifi from 'react-native-android-wifi'
@@ -19,13 +27,16 @@ export default class WifiScreen extends Component {
   }
 
   componentDidMount () {
-    wifi.reScanAndLoadWifiList((wifiStringList) => {
-      const wifiList = JSON.parse(wifiStringList)
-      this.setState({ wifiNetworks: wifiList })
-    }, () => {})
+    wifi.reScanAndLoadWifiList(
+      wifiStringList => {
+        const wifiList = JSON.parse(wifiStringList)
+        this.setState({ wifiNetworks: wifiList })
+      },
+      () => {}
+    )
   }
 
-  handleWifiPassword = (wifiPassword) => {
+  handleWifiPassword = wifiPassword => {
     this.setState({
       wifiPassword
     })
@@ -37,7 +48,8 @@ export default class WifiScreen extends Component {
       password: this.state.wifiPassword
     }
     this.popupDialog.show()
-    axios.post('http://192.168.0.1:8080/api/init/wifi', wifiCredentials)
+    axios
+      .post('http://192.168.0.1:8080/api/init/wifi', wifiCredentials)
       .then(console.log)
       .catch(console.log)
   }
@@ -47,9 +59,17 @@ export default class WifiScreen extends Component {
     return (
       <View style={styles.outerContainer}>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>Elije la red WiFi a la cual se conectara la pantalla</Text>
+          <Text style={styles.title}>
+            Elije la red WiFi a la cual se conectara la pantalla
+          </Text>
           {wifiNetworks.length === 0 ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <Text style={styles.subtitle}>Cargando</Text>
             </View>
           ) : (
@@ -57,11 +77,17 @@ export default class WifiScreen extends Component {
               <Picker
                 style={styles.wifiPicker}
                 selectedValue={this.state.network}
-                onValueChange={(itemValue, itemIndex) => this.setState({ network: itemValue })}
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({ network: itemValue })
+                }
               >
-                {wifiNetworks.map(network =>
-                  <Picker.Item key={network.SSID} label={network.SSID} value={network.SSID} />
-                )}
+                {wifiNetworks.map(network => (
+                  <Picker.Item
+                    key={network.SSID}
+                    label={network.SSID}
+                    value={network.SSID}
+                  />
+                ))}
               </Picker>
               <Hideo
                 iconClass={FontAwesomeIcon}
@@ -85,7 +111,9 @@ export default class WifiScreen extends Component {
           )}
         </View>
         <PopupDialog
-          ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+          ref={popupDialog => {
+            this.popupDialog = popupDialog
+          }}
           dialogAnimation={slideAnimation}
           dialogStyle={styles.dialogContainer}
         >
@@ -120,8 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     textAlign: 'center'
   },
-  continueButton: {
-  },
+  continueButton: {},
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
@@ -149,5 +176,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'center',
     color: '#1976D2'
-  },
+  }
 })
