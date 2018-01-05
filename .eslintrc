@@ -1,11 +1,13 @@
 {
-  "extends": [
-    "eslint-config-mostaza-react"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "standard"],
   "parser": "babel-eslint",
-  "settings": {
-    "import/resolver": {
-      "babel-module": {}
-    }
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
+  "plugins": ["eslint-plugin-react"],
+  "rules": {
+    "no-extra-parens": 0,
+    "react/jsx-uses-vars": 1
   }
 }

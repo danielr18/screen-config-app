@@ -7,7 +7,8 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import API from '../../api'
 
 const screenWidth = Dimensions.get('window').width
-export default class SetupScreen extends Component {
+
+export default class HomeScreen extends Component {
   state = {
     screenName: '',
     screenToken: null,
@@ -28,12 +29,8 @@ export default class SetupScreen extends Component {
     this.setState({ loading: true })
     API.createDevice(this.state.screenName)
       .then(device => {
-        this.setState({ screenToken: device.token })
-        axios.post('http://192.168.0.1:8080/api/init/auth', { token: device.token })
-          .then((res) => {
-            this.props.setWifi()
-          })
-          .catch(console.log)
+        this.props.setToken(device.token)
+        this.props.pickDevice()
       })
       .catch(console.log)
   }

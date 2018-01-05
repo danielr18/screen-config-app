@@ -29,7 +29,6 @@ export default {
       )
   },
   createDevice: (name) => {
-    console.log('dss')
     return axiosAuthInstance()
       .then((axiosApi) =>
         axiosApi.post('/dispositivo/', { nombre: name })

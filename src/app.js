@@ -60,6 +60,11 @@ export class PiScreenConfig extends Component {
       })
   }
 
+  logout = () => {
+    AsyncStorage.removeItem('jwt')
+    this.setState({ isLoggedIn: false, isAppReady: false, isSettingUp: false })
+  }
+
   /**
    * Simple routing.
    * If the user is authenticated (isAppReady) show the HomeScreen, otherwise show the AuthScreen
@@ -70,12 +75,15 @@ export class PiScreenConfig extends Component {
         return (
           <HomeScreen
             setupScreen={() => this.setState({ isSettingUp: true })}
-            logout={() => this.setState({ isLoggedIn: false, isAppReady: false, isSettingUp: false })}
+            logout={this.logout}
           />
         )
       } else {
         return (
-          <SetupScreen />
+          <SetupScreen
+            homeScreen={() => this.setState({ isSettingUp: false })}
+            logout={this.logout}
+          />
         )
       }
     } else {
