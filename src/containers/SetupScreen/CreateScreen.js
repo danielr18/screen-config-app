@@ -55,7 +55,7 @@ export default class HomeScreen extends Component {
             <View style={{ flex: 1 }}>
               <Hideo
                 iconClass={FontAwesomeIcon}
-                iconName={'lock'}
+                iconName={'desktop'}
                 iconColor={'#FFF'}
                 iconBackgroundColor={'#1976D2'}
                 inputStyle={{ color: '#464949' }}

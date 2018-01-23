@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { AsyncStorage } from 'react-native'
-export const HOST_URL = 'http://192.168.1.114:8000'
+export const HOST_URL = 'http://192.168.2.150:8000'
 export const API_BASE = `${HOST_URL}/api/v1`
 
 const axiosAuthInstance = () => {
