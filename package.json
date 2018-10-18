@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
-    "react": "15.4.1",
-    "react-native": "0.39.2",
+    "react": "^16.4.1",
+    "react-native": "^0.57.3",
     "react-native-android-wifi": "0.0.20",
     "react-native-animatable": "1.1.0",
     "react-native-popup-dialog": "^0.10.44",
