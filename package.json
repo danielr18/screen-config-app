@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "axios": "^0.17.1",
@@ -16,7 +18,8 @@
     "react-native-popup-dialog": "^0.10.44",
     "react-native-selectme": "^1.2.3",
     "react-native-textinput-effects": "^0.4.2",
-    "react-native-vector-icons": "^4.4.3"
+    "react-native-vector-icons": "^4.4.3",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
@@ -36,5 +39,6 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "snyk": true
 }
